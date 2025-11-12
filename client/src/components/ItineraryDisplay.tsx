@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Utensils, Clock, Download, RefreshCw, Edit } from "lucide-react";
+import { MapPin, Utensils, Clock, Download, RefreshCw, Edit, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Itinerary } from "@shared/schema";
 
@@ -9,7 +9,9 @@ interface ItineraryDisplayProps {
   onRegenerate?: () => void;
   onEdit?: () => void;
   onDownload?: () => void;
+  onSave?: () => void;
   isRegenerating?: boolean;
+  isSaving?: boolean;
 }
 
 export default function ItineraryDisplay({
@@ -17,7 +19,9 @@ export default function ItineraryDisplay({
   onRegenerate,
   onEdit,
   onDownload,
-  isRegenerating
+  onSave,
+  isRegenerating,
+  isSaving
 }: ItineraryDisplayProps) {
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -92,6 +96,19 @@ export default function ItineraryDisplay({
             <Edit className="w-4 h-4 mr-2" />
             Edit Preferences
           </Button>
+          <Button onClick={onSave} variant="secondary" disabled={isSaving} data-testid="button-save">
+            {isSaving ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Save Itinerary
+              </>
+            )}
+          </Button>
           <Button onClick={onDownload} variant="secondary" data-testid="button-download">
             <Download className="w-4 h-4 mr-2" />
             Download PDF
@@ -127,9 +144,16 @@ export default function ItineraryDisplay({
                       {getActivityIcon(activity.type)}
                       <h4 className="font-semibold">{activity.title}</h4>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                       {activity.description}
                     </p>
+                    {activity.details && (
+                      <div className="bg-muted/30 p-3 rounded-md border-l-4 border-primary/30">
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          <strong>More Details:</strong> {activity.details}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

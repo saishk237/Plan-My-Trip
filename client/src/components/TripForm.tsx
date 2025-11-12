@@ -18,6 +18,7 @@ interface TripFormProps {
 export default function TripForm({ onSubmit, initialData, isLoading }: TripFormProps) {
   const [formData, setFormData] = useState<TripRequest>({
     destination: initialData?.destination || "",
+    startingLocation: initialData?.startingLocation || "",
     days: initialData?.days || 7,
     budget: initialData?.budget || "Moderate",
     travelType: initialData?.travelType || "Solo",
@@ -25,7 +26,7 @@ export default function TripForm({ onSubmit, initialData, isLoading }: TripFormP
     pace: initialData?.pace || "Balanced",
     accommodation: initialData?.accommodation || "Hotel",
     transportation: initialData?.transportation || "Public Transport",
-    mealPreference: initialData?.mealPreference || "Non-Veg"
+    mealPreference: initialData?.mealPreference || "No preference"
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,20 +43,37 @@ export default function TripForm({ onSubmit, initialData, isLoading }: TripFormP
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="space-y-6">
-          <div>
-            <Label htmlFor="destination" className="text-base font-semibold mb-2 block">
-              Destination
-            </Label>
-            <Input
-              id="destination"
-              type="text"
-              placeholder="e.g., Paris, Tokyo, Bali"
-              value={formData.destination}
-              onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-              required
-              className="h-12"
-              data-testid="input-destination"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="startingLocation" className="text-base font-semibold mb-2 block">
+                Starting Location
+              </Label>
+              <Input
+                id="startingLocation"
+                type="text"
+                placeholder="e.g., New York, London, Mumbai"
+                value={formData.startingLocation}
+                onChange={(e) => setFormData({ ...formData, startingLocation: e.target.value })}
+                required
+                className="h-12"
+                data-testid="input-starting-location"
+              />
+            </div>
+            <div>
+              <Label htmlFor="destination" className="text-base font-semibold mb-2 block">
+                Destination
+              </Label>
+              <Input
+                id="destination"
+                type="text"
+                placeholder="e.g., Paris, Tokyo, Bali"
+                value={formData.destination}
+                onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                required
+                className="h-12"
+                data-testid="input-destination"
+              />
+            </div>
           </div>
 
           <div>
@@ -188,9 +206,9 @@ export default function TripForm({ onSubmit, initialData, isLoading }: TripFormP
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="No preference">No Preference</SelectItem>
                 <SelectItem value="Veg">Vegetarian</SelectItem>
                 <SelectItem value="Non-Veg">Non-Vegetarian</SelectItem>
-                <SelectItem value="Vegan">Vegan</SelectItem>
               </SelectContent>
             </Select>
           </div>

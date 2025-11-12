@@ -7,52 +7,93 @@ const openai = new OpenAI({
 });
 
 export async function generateItinerary(request: TripRequest) {
-  const prompt = createPrompt(request);
 
   const completion = await openai.chat.completions.create({
     model: "llama-3.1-8b-instant",
     messages: [
       {
         role: "system",
-        content: `You are a travel planner. Create a JSON itinerary. Return ONLY valid JSON, no other text.
+        content: `Create a travel itinerary in JSON format. Return ONLY valid JSON.
 
-Structure:
+Example format:
 {
-  "title": "Trip Name",
-  "destination": "Location",
-  "duration": "X Days", 
-  "budget": "Budget Level",
-  "travelType": "Travel Type",
-  "highlights": ["highlight1", "highlight2", "highlight3", "highlight4"],
+  "title": "Amazing Trip",
+  "destination": "Paris",
+  "duration": "3 Days",
+  "budget": "Moderate", 
+  "travelType": "Solo",
+  "highlights": ["Eiffel Tower", "Louvre Museum", "Seine River", "Local Cuisine"],
   "days": [
     {
       "day": 1,
-      "title": "Day Theme",
+      "title": "Arrival Day",
       "activities": [
         {
           "time": "9:00 AM",
-          "title": "Activity Name", 
-          "description": "Activity description",
-          "type": "activity"
+          "title": "Hotel Check-in",
+          "description": "Check into hotel and rest",
+          "type": "accommodation",
+          "details": "Upon arrival, complete check-in procedures and take time to freshen up. Most hotels offer early check-in if rooms are available. Use this time to familiarize yourself with hotel amenities and plan your day."
+        },
+        {
+          "time": "12:00 PM", 
+          "title": "Lunch at Cafe",
+          "description": "Try local food",
+          "type": "lunch",
+          "details": "Experience authentic local cuisine at a popular neighborhood cafe. Ask for recommendations from locals or hotel staff. This is a great opportunity to try regional specialties and get a taste of the local food culture."
+        },
+        {
+          "time": "2:00 PM",
+          "title": "City Walk",
+          "description": "Explore the city center", 
+          "type": "sightseeing",
+          "details": "Take a leisurely walking tour through the historic city center. Look for architectural highlights, street art, and local shops. Bring comfortable walking shoes and a camera. Consider joining a free walking tour or using a self-guided tour app."
         }
       ]
     }
   ]
 }
 
-RULES:
-- Use "activity" for sightseeing, tours, shopping, entertainment
-- Use "meal" for breakfast, lunch, dinner, food
-- Use "rest" for hotel, sleep, travel time
-- Keep JSON simple and valid
-- No special characters in strings`
+CRITICAL RULES:
+- ALL strings must be in double quotes
+- ALL times must be quoted like "9:00 AM"
+- Use descriptive types like "sightseeing", "adventure", "culture", "food", "relaxation", "shopping", "breakfast", "lunch", "dinner", "hotel", "transport", etc.
+- Each activity MUST include a "details" field with 2-3 sentences providing helpful tips, what to expect, or interesting facts
+- No line breaks or special characters in strings
+- Keep descriptions concise but make details informative`
       },
       {
-        role: "user", 
-        content: prompt
+        role: "user",
+        content: `Create a ${request.days}-day itinerary from ${request.startingLocation} to ${request.destination}. 
+        
+Budget: ${request.budget}
+Travel type: ${request.travelType}  
+Starting location: ${request.startingLocation}
+Destination: ${request.destination}
+User is interested in: ${request.interests.join(", ")} activities
+Pace: Include ${request.pace === "Packed" ? "many" : request.pace === "Balanced" ? "moderate" : "few"} activities per day
+Meal preference: ${request.mealPreference === "No preference" ? "Include both vegetarian and non-vegetarian options without specifying restaurant type" : `Focus on ${request.mealPreference} restaurants and food`}
+
+For the "type" field, use natural, descriptive categories like:
+- Sightseeing: "sightseeing", "temple", "museum", "landmark"
+- Adventure: "adventure", "hiking", "water-sports", "trekking"
+- Culture: "culture", "art", "history", "local-experience"
+- Food: "breakfast", "lunch", "dinner", "street-food", "cooking-class"
+- Shopping: "shopping", "market", "souvenirs"
+- Relaxation: "spa", "beach", "relaxation", "wellness"
+- Accommodation: "hotel", "check-in", "check-out"
+- Transport: "transport", "travel", "transfer"
+
+Focus heavily on the user's interests: ${request.interests.join(", ")}. 
+
+IMPORTANT: 
+- Day 1 must start from ${request.startingLocation} with travel arrangements to ${request.destination}
+- Include travel time and transportation details from starting location
+- Create a natural flow of activities, meals, and rest periods
+- Add detailed descriptions for each activity explaining what makes it special and what to expect`
       }
     ],
-    temperature: 0.3,
+    temperature: 0.1,
     response_format: { type: "json_object" }
   });
 
