@@ -7,10 +7,14 @@ const openai = new OpenAI({
 });
 
 export async function generateItinerary(request: TripRequest) {
-
-  const completion = await openai.chat.completions.create({
-    model: "llama-3.1-8b-instant",
-    messages: [
+  // Try up to 2 times if JSON parsing fails
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        messages: [
       {
         role: "system",
         content: `Create a travel itinerary in JSON format. Return ONLY valid JSON.
@@ -54,13 +58,24 @@ Example format:
   ]
 }
 
-CRITICAL RULES:
-- ALL strings must be in double quotes
-- ALL times must be quoted like "9:00 AM"
-- Use descriptive types like "sightseeing", "adventure", "culture", "food", "relaxation", "shopping", "breakfast", "lunch", "dinner", "hotel", "transport", etc.
-- Each activity MUST include a "details" field with 2-3 sentences providing helpful tips, what to expect, or interesting facts
-- No line breaks or special characters in strings
-- Keep descriptions concise but make details informative`
+CRITICAL JSON FORMATTING RULES:
+1. ALL strings MUST be in double quotes (") - NEVER use single quotes or backticks
+2. ALL time values MUST be quoted strings: "9:00 AM" NOT 9:00 AM
+3. NO apostrophes (') in any text - use straight quotes only
+4. NO line breaks (\n) inside string values
+5. NO special characters or escape sequences in strings
+6. ALL property names must be in double quotes
+7. Use simple, clean text without formatting
+
+CONTENT RULES:
+- Use descriptive types: "sightseeing", "adventure", "culture", "breakfast", "lunch", "dinner", "hotel", "transport"
+- Each activity MUST include a "details" field with 2-3 sentences
+- Keep all text simple and avoid apostrophes (use "do not" instead of "don't")
+- Make descriptions informative but concise
+
+VALIDATION:
+- Your response must be valid JSON that can be parsed by JSON.parse()
+- Test each string value - it must not contain unescaped quotes or special characters`
       },
       {
         role: "user",
@@ -92,25 +107,52 @@ IMPORTANT:
 - Create a natural flow of activities, meals, and rest periods
 - Add detailed descriptions for each activity explaining what makes it special and what to expect`
       }
-    ],
-    temperature: 0.1,
-    response_format: { type: "json_object" }
-  });
+        ],
+        temperature: 0.1,
+        response_format: { type: "json_object" }
+      });
 
-  const content = completion.choices[0].message.content;
-  if (!content) {
-    throw new Error("No response from Groq");
+      const content = completion.choices[0].message.content;
+      if (!content) {
+        throw new Error("No response from Groq");
+      }
+
+      // Try to parse the JSON
+      let parsed;
+      try {
+        parsed = JSON.parse(content);
+      } catch (parseError) {
+        console.error(`Attempt ${attempt}: JSON parse error:`, parseError);
+        console.error("Raw content:", content);
+        lastError = new Error("Failed to parse AI response as JSON");
+        continue; // Try again
+      }
+
+      // Validate against schema
+      const validation = itinerarySchema.safeParse(parsed);
+      
+      if (!validation.success) {
+        console.error(`Attempt ${attempt}: Schema validation failed:`, validation.error);
+        lastError = new Error("AI generated invalid itinerary format");
+        continue; // Try again
+      }
+
+      // Success! Return the validated data
+      return validation.data;
+      
+    } catch (error) {
+      console.error(`Attempt ${attempt} failed:`, error);
+      lastError = error as Error;
+      
+      // If it's a Groq API error (not our validation error), don't retry
+      if (error instanceof Error && error.message.includes("BadRequestError")) {
+        throw error;
+      }
+    }
   }
-
-  const parsed = JSON.parse(content);
-  const validation = itinerarySchema.safeParse(parsed);
   
-  if (!validation.success) {
-    console.error("Invalid itinerary format from AI:", validation.error);
-    throw new Error("AI generated invalid itinerary format");
-  }
-
-  return validation.data;
+  // If we get here, all attempts failed
+  throw lastError || new Error("Failed to generate itinerary after multiple attempts");
 }
 
 function createPrompt(request: TripRequest): string {
