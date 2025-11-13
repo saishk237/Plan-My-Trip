@@ -249,9 +249,6 @@ npm run dev
 ## 📅 Release Timeline
 
 - **v1.0.0** - First official release (Current)
-- **v1.1.0** - Planned: Social sharing features
-- **v2.0.0** - Planned: Collaborative trip planning
-- **v3.0.0** - Planned: Mobile app
 
 ---
 
@@ -262,6 +259,8 @@ If you find PlanMyTrip useful, please consider:
 - 🐛 Reporting bugs
 - 💡 Suggesting features
 - 🤝 Contributing code
+- ☕ Supporting on [Buy Me a Coffee](https://buymeacoffee.com/saish237)
+```
 
 ---
 
@@ -269,5 +268,5 @@ If you find PlanMyTrip useful, please consider:
 
 ---
 
-*PlanMyTrip v2.0.0 - Your AI-Powered Travel Companion*
+*PlanMyTrip v1.0.0 - Your AI-Powered Travel Companion*
 
