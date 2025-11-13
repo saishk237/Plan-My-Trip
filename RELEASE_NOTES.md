@@ -260,7 +260,6 @@ If you find PlanMyTrip useful, please consider:
 - 💡 Suggesting features
 - 🤝 Contributing code
 - ☕ Supporting on [Buy Me a Coffee](https://buymeacoffee.com/saish237)
-```
 
 ---
 
