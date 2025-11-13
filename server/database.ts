@@ -8,7 +8,7 @@ const pool = new Pool({
   port: 5432,
   user: 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'postgres',
-  database: 'tripcraft',
+  database: 'planmytrip',
 });
 
 export const db = drizzle(pool, { schema });
@@ -30,14 +30,14 @@ export async function initializeDatabase() {
     try {
       // Check if database exists
       const result = await client.query(
-        "SELECT 1 FROM pg_database WHERE datname = 'tripcraft'"
+        "SELECT 1 FROM pg_database WHERE datname = 'planmytrip'"
       );
       
       if (result.rows.length === 0) {
-        await client.query('CREATE DATABASE tripcraft');
-        console.log('✅ Database "tripcraft" created successfully');
+        await client.query('CREATE DATABASE planmytrip');
+        console.log('✅ Database "planmytrip" created successfully');
       } else {
-        console.log('✅ Database "tripcraft" already exists');
+        console.log('✅ Database "planmytrip" already exists');
       }
     } catch (error) {
       console.log('Database already exists or error creating:', error);
@@ -47,15 +47,15 @@ export async function initializeDatabase() {
     }
 
     // Create tables only if they don't exist (no DROP)
-    const tripcraftPool = new Pool({
+    const planmytripPool = new Pool({
       host: 'localhost',
       port: 5432,
       user: 'postgres',
       password: process.env.POSTGRES_PASSWORD || 'postgres',
-      database: 'tripcraft',
+      database: 'planmytrip',
     });
 
-    const dbClient = await tripcraftPool.connect();
+    const dbClient = await planmytripPool.connect();
     
     try {
       // Create users table only if it doesn't exist
@@ -93,7 +93,7 @@ export async function initializeDatabase() {
       console.error('❌ Error creating tables:', error);
     } finally {
       dbClient.release();
-      await tripcraftPool.end();
+      await planmytripPool.end();
     }
   } catch (error) {
     console.error('❌ Error initializing database:', error);

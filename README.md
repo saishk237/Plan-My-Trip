@@ -1,13 +1,13 @@
-# 🌍 TripCraft - AI-Powered Travel Itinerary Generator
+# 🌍 PlanMyTrip - AI-Powered Travel Itinerary Generator
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/YOUR_USERNAME/Plan-My-Trip/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/saishk237/Plan-My-Trip/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/postgresql-%3E%3D14.0-blue.svg)](https://www.postgresql.org/)
 
 > Transform your travel dreams into detailed itineraries with the power of AI
 
-TripCraft is a full-stack web application that uses AI to generate personalized travel itineraries based on your preferences, budget, and interests. Built with React, Express, PostgreSQL, and powered by Groq's Llama 3.1 AI model.
+PlanMyTrip is a full-stack web application that uses AI to generate personalized travel itineraries based on your preferences, budget, and interests. Built with React, Express, PostgreSQL, and powered by Groq's Llama 3.1 AI model.
 
 ---
 
@@ -51,7 +51,7 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/Plan-My-Trip.git
+   git clone https://github.com/saishk237/Plan-My-Trip.git
    cd Plan-My-Trip
    ```
 
@@ -327,8 +327,8 @@ CREATE TABLE saved_itineraries (
 
 ```dockerfile
 # Dockerfile included in repository
-docker build -t tripcraft .
-docker run -p 5000:5000 tripcraft
+docker build -t planmytrip .
+docker run -p 5000:5000 planmytrip
 ```
 
 ---
@@ -355,7 +355,7 @@ We welcome contributions! Please follow these steps:
 
 ## 🐛 Bug Reports
 
-Found a bug? Please open an issue on [GitHub Issues](https://github.com/YOUR_USERNAME/Plan-My-Trip/issues) with:
+Found a bug? Please open an issue on [GitHub Issues](https://github.com/saishk237/Plan-My-Trip/issues) with:
 
 - Clear description of the bug
 - Steps to reproduce
@@ -375,7 +375,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Groq** - For providing free AI API access
 - **shadcn/ui** - For beautiful UI components
-- **Replit Agent 3** - For the initial codebase structure
 - **Lucide** - For the icon set
 - **Vercel** - For Next Themes
 
@@ -383,7 +382,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Project Stats
 
-- **Version**: 2.0.0
+- **Version**: 1.0.0
 - **Last Updated**: November 12, 2025
 - **Contributors**: 1
 - **Stars**: ⭐ Star us on GitHub!
@@ -393,23 +392,29 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
-### v2.1.0 (Planned)
+### v1.1.0 (Planned)
 - [ ] Social sharing of itineraries
-- [ ] Collaborative trip planning
 - [ ] Real-time weather integration
 - [ ] Budget tracking
+- [ ] Export to Google Calendar
 
-### v2.2.0 (Planned)
+### v1.2.0 (Planned)
 - [ ] Multi-language support
 - [ ] Currency conversion
-- [ ] Hotel booking integration
+- [ ] Hotel recommendations
 - [ ] Flight search integration
+
+### v2.0.0 (Future)
+- [ ] Collaborative trip planning
+- [ ] Trip sharing and collaboration
+- [ ] AI chat assistant
+- [ ] Advanced customization
 
 ### v3.0.0 (Future)
 - [ ] Mobile app (React Native)
 - [ ] Offline mode
-- [ ] Trip collaboration
-- [ ] AI chat assistant
+- [ ] Real-time notifications
+- [ ] Social features
 
 ---
 
@@ -417,15 +422,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Need help? Reach out:
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/YOUR_USERNAME/Plan-My-Trip/issues)
-- **GitHub Discussions**: [Ask questions or share ideas](https://github.com/YOUR_USERNAME/Plan-My-Trip/discussions)
-- **Email**: support@tripcraft.example.com
+- **GitHub Issues**: [Report bugs or request features](https://github.com/saishk237/Plan-My-Trip/issues)
+- **GitHub Discussions**: [Ask questions or share ideas](https://github.com/saishk237/Plan-My-Trip/discussions)
+- **Email**: support@planmytrip.example.com
 
 ---
 
 ## ⭐ Show Your Support
 
-If you find TripCraft helpful, please consider:
+If you find PlanMyTrip helpful, please consider:
 
 - ⭐ **Star** this repository
 - 🐛 **Report** bugs you find
@@ -439,6 +444,6 @@ If you find TripCraft helpful, please consider:
 
 **Made with ❤️ by developers, for travelers**
 
-[Website](https://tripcraft.example.com) • [Documentation](https://docs.tripcraft.example.com) • [Demo](https://demo.tripcraft.example.com)
+[Website](https://planmytrip.example.com) • [Documentation](https://docs.planmytrip.example.com) • [Demo](https://demo.planmytrip.example.com)
 
 </div>

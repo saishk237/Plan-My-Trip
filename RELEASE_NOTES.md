@@ -1,8 +1,8 @@
-# 🎉 TripCraft v2.0.0 - Major Release
+# 🎉 PlanMyTrip v1.0.0 - First Official Release
 
 **Release Date**: November 12, 2025
 
-We're excited to announce TripCraft v2.0.0, a complete overhaul of our AI-powered travel itinerary generator! This release transforms TripCraft from a simple demo into a production-ready application with user authentication, persistent storage, and enhanced AI capabilities.
+We're excited to announce PlanMyTrip v1.0.0, the first official release of our AI-powered travel itinerary generator! This production-ready application features user authentication, persistent storage, and enhanced AI capabilities powered by Groq.
 
 ---
 
@@ -49,7 +49,7 @@ We're excited to announce TripCraft v2.0.0, a complete overhaul of our AI-powere
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/Plan-My-Trip.git
+   git clone https://github.com/saishk237/Plan-My-Trip.git
    cd Plan-My-Trip
    ```
 
@@ -161,7 +161,7 @@ npm start
 
 None at this time! 🎉
 
-If you encounter any issues, please report them on our [GitHub Issues](https://github.com/YOUR_USERNAME/Plan-My-Trip/issues) page.
+If you encounter any issues, please report them on our [GitHub Issues](https://github.com/saishk237/Plan-My-Trip/issues) page.
 
 ---
 
@@ -174,66 +174,24 @@ If you encounter any issues, please report them on our [GitHub Issues](https://g
 
 ---
 
-## 🆕 What Changed Since v1.0.0?
+## 🆕 What's Included in v1.0.0?
 
-### Added
-- User authentication system (signup/login)
+### Core Features
+- User authentication system (signup/login with JWT)
 - PostgreSQL database integration
 - Profile page with saved itineraries
 - Dark/light theme toggle
-- Starting location input
-- Activity details paragraphs
+- Starting location input for trip planning
+- Activity details with helpful tips
 - Save itinerary functionality
-- PDF export improvements
-- Database migration scripts
+- Professional PDF export
+- Database management scripts
 
-### Changed
-- Switched from OpenAI to Groq AI
-- Updated meal preferences (added "No preference")
-- Improved form validation
-- Enhanced error messages
-- Better PDF formatting
-- Optimized database queries
-
-### Fixed
-- Environment variable loading
-- React hook errors
-- AI model deprecation
-- JSON parsing issues
-- Database persistence
-- Authentication state sync
-- Logout redirect
-- Profile display errors
-- Form validation errors
-
-### Removed
-- In-memory storage (replaced with PostgreSQL)
-- OpenAI dependency
-- Vegan meal option (consolidated into preferences)
-- Replit-specific configurations
-
----
-
-## 🎯 Migration from v1.0.0
-
-### Breaking Changes
-
-⚠️ **Important**: This release includes breaking changes that require manual migration.
-
-1. **Database Migration**
-   - Old in-memory data will be lost
-   - Run `npm run db:setup` to create new database
-
-2. **API Key Change**
-   - Replace `OPENAI_API_KEY` with `GROQ_API_KEY` in `.env`
-   - Get free Groq API key from [console.groq.com](https://console.groq.com)
-
-3. **New Dependencies**
-   - Run `npm install` to install new packages
-
-4. **Authentication Required**
-   - Users must now create accounts to use the app
-   - Existing usage data cannot be migrated
+### Technology Stack
+- **Frontend**: React 18, TypeScript, TailwindCSS, shadcn/ui
+- **Backend**: Express.js, PostgreSQL, Drizzle ORM
+- **AI**: Groq API with Llama 3.1 8B Instant
+- **Authentication**: JWT with bcrypt password hashing
 
 ---
 
@@ -245,7 +203,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/Plan-My-Trip.git
+git clone https://github.com/saishk237/Plan-My-Trip.git
 
 # Install dependencies
 npm install
@@ -277,30 +235,29 @@ npm run dev
 - **AI Provider**: [Groq](https://groq.com)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com)
 - **Icons**: [Lucide Icons](https://lucide.dev)
-- **Initial Codebase**: Replit Agent 3
 
 ---
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/Plan-My-Trip/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/Plan-My-Trip/discussions)
-- **Email**: support@tripcraft.example.com
+- **Issues**: [GitHub Issues](https://github.com/saishk237/Plan-My-Trip/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/saishk237/Plan-My-Trip/discussions)
+- **Email**: saish237@gmail.com
 
 ---
 
 ## 📅 Release Timeline
 
-- **v1.0.0** - Initial Replit Agent 3 generated code
-- **v2.0.0** - Complete overhaul with authentication and database (Current)
-- **v2.1.0** - Planned: Social sharing features
+- **v1.0.0** - First official release (Current)
+- **v1.1.0** - Planned: Social sharing features
+- **v2.0.0** - Planned: Collaborative trip planning
 - **v3.0.0** - Planned: Mobile app
 
 ---
 
 ## ⭐ Show Your Support
 
-If you find TripCraft useful, please consider:
+If you find PlanMyTrip useful, please consider:
 - ⭐ Starring the repository
 - 🐛 Reporting bugs
 - 💡 Suggesting features
@@ -312,5 +269,5 @@ If you find TripCraft useful, please consider:
 
 ---
 
-*TripCraft v2.0.0 - Your AI-Powered Travel Companion*
+*PlanMyTrip v2.0.0 - Your AI-Powered Travel Companion*
 

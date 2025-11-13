@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import 'dotenv/config';
 
 async function setupDatabase() {
-  // First, connect to default postgres database to create tripcraft database
+  // First, connect to default postgres database to create planmytrip database
   const adminPool = new Pool({
     host: 'localhost',
     port: 5432,
@@ -16,14 +16,14 @@ async function setupDatabase() {
   try {
     // Create database if it doesn't exist
     const result = await client.query(
-      "SELECT 1 FROM pg_database WHERE datname = 'tripcraft'"
+      "SELECT 1 FROM pg_database WHERE datname = 'planmytrip'"
     );
     
     if (result.rows.length === 0) {
-      await client.query('CREATE DATABASE tripcraft');
-      console.log('✅ Database "tripcraft" created successfully');
+      await client.query('CREATE DATABASE planmytrip');
+      console.log('✅ Database "planmytrip" created successfully');
     } else {
-      console.log('✅ Database "tripcraft" already exists');
+      console.log('✅ Database "planmytrip" already exists');
     }
   } catch (error) {
     console.error('❌ Error creating database:', error.message);
@@ -32,16 +32,16 @@ async function setupDatabase() {
     await adminPool.end();
   }
 
-  // Now connect to tripcraft database to create tables
-  const tripcraftPool = new Pool({
+  // Now connect to planmytrip database to create tables
+  const planmytripPool = new Pool({
     host: 'localhost',
     port: 5432,
     user: 'postgres',
     password: process.env.POSTGRES_PASSWORD || 'postgres',
-    database: 'tripcraft',
+    database: 'planmytrip',
   });
 
-  client = await tripcraftPool.connect();
+  client = await planmytripPool.connect();
   
   try {
     // Drop existing users table if it exists
@@ -86,7 +86,7 @@ async function setupDatabase() {
     console.error('❌ Error creating tables:', error.message);
   } finally {
     client.release();
-    await tripcraftPool.end();
+    await planmytripPool.end();
   }
 }
 

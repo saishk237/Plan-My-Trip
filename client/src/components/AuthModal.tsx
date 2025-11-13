@@ -129,7 +129,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Welcome to TripCraft</DialogTitle>
+          <DialogTitle>Welcome to PlanMyTrip</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="login" className="w-full">

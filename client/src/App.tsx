@@ -88,7 +88,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider defaultTheme="light" storageKey="tripcraft-theme">
+      <ThemeProvider defaultTheme="light" storageKey="planmytrip-theme">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <div className="fixed top-4 right-4 z-50">

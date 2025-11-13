@@ -1,12 +1,12 @@
 # Changelog
 
-All notable changes to TripCraft will be documented in this file.
+All notable changes to PlanMyTrip will be documented in this file.
 
-## [v2.0.0] - 2025-11-12
+## [v1.0.0] - 2025-11-12
 
-### 🎉 Major Release - Complete Application Overhaul
+### 🎉 First Official Release
 
-This release represents a complete transformation of TripCraft with production-ready features, user authentication, and enhanced AI capabilities.
+This is the first official release of PlanMyTrip - a production-ready AI-powered travel itinerary generator with user authentication, persistent storage, and enhanced features.
 
 ---
 
@@ -197,15 +197,6 @@ CREATE TABLE saved_itineraries (
 
 ---
 
-## 🎯 Breaking Changes
-
-- **Authentication Required**: Users must now log in to generate and save itineraries
-- **Database Migration**: In-memory storage replaced with PostgreSQL
-- **AI Model Change**: OpenAI replaced with Groq (requires new API key)
-- **Schema Changes**: New required fields (name, startingLocation)
-
----
-
 ## 📊 Statistics
 
 - **Files Changed**: 25+
@@ -219,7 +210,6 @@ CREATE TABLE saved_itineraries (
 ## 🙏 Acknowledgments
 
 - Groq for providing free AI API access
-- Replit Agent 3 for the initial codebase
 - shadcn/ui for beautiful UI components
 
 ---
@@ -238,8 +228,4 @@ CREATE TABLE saved_itineraries (
 ## 📄 License
 
 MIT License - See LICENSE file for details
-
----
-
-**Full Changelog**: https://github.com/YOUR_USERNAME/Plan-My-Trip/compare/v1.0.0...v2.0.0
 
