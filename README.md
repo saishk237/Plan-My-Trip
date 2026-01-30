@@ -296,7 +296,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 👥 Authors
 
-- **Saish Khandare** - [GitHub](https://github.com/saishk237)
+- **Saish Kothawade** - [GitHub](https://github.com/saishk237)
 
 ## 🙏 Acknowledgments
 
@@ -308,7 +308,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 📞 Support
 
-For support, email saishk237@example.com or open an issue in the GitHub repository.
+For support, email saish237@gmail.com or open an issue in the GitHub repository.
 
 ---
 
