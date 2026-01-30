@@ -1,0 +1,39 @@
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "production"
+
+# VPC Configuration
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24"]
+
+# RDS Configuration
+db_name               = "planmytrip"
+db_username           = "admin"
+db_password           = "CHANGE_ME_SECURE_PASSWORD"
+db_instance_class     = "db.t3.micro"
+multi_az              = true
+backup_retention_days = 7
+
+# ECS Configuration
+container_image    = "123456789012.dkr.ecr.us-east-1.amazonaws.com/planmytrip:latest"
+container_port     = 5000
+ecs_task_cpu       = "512"
+ecs_task_memory    = "1024"
+ecs_desired_count  = 2
+ecs_min_capacity   = 2
+ecs_max_capacity   = 10
+cpu_target_value   = 70
+memory_target_value = 80
+
+# ALB Configuration
+certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/xxxxx"
+
+# Application Secrets
+groq_api_key   = "your-groq-api-key"
+gemini_api_key = "your-gemini-api-key"
+jwt_secret     = "your-jwt-secret-key"
+
+# Monitoring
+sns_topic_arn = "arn:aws:sns:us-east-1:123456789012:planmytrip-alerts"
+

@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Development
+  postgres:
+    image: postgres:14-alpine
+    container_name: planmytrip-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres123}
+      POSTGRES_DB: planmytrip
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+    networks:
+      - planmytrip-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PlanMyTrip Application (Development with hot reload)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: planmytrip-app-dev
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+      - "5173:5173"  # Vite dev server
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres123}@postgres:5432/planmytrip
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres123}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-key}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - planmytrip-dev-network
+    command: npm run dev
+
+volumes:
+  postgres_dev_data:
+    driver: local
+
+networks:
+  planmytrip-dev-network:
+    driver: bridge
+
+
+
+
+

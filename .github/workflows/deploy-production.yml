@@ -1,0 +1,162 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy'
+        required: true
+        type: string
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: planmytrip
+  ECS_CLUSTER: planmytrip-cluster
+  ECS_SERVICE: planmytrip-service
+  ECS_TASK_DEFINITION: planmytrip-task
+
+jobs:
+  pre-deployment-checks:
+    name: Pre-Deployment Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify version tag exists
+        run: |
+          if ! git rev-parse ${{ inputs.version }} >/dev/null 2>&1; then
+            echo "Error: Version tag ${{ inputs.version }} does not exist"
+            exit 1
+          fi
+
+      - name: Run security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ inputs.version }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: pre-deployment-checks
+    environment:
+      name: production
+      url: https://planmytrip.yourdomain.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.ECS_TASK_DEFINITION }} \
+            --query taskDefinition > task-definition.json
+
+      - name: Update task definition with new image
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: planmytrip-container
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ inputs.version }}
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting for deployment to stabilize..."
+          sleep 30
+          
+          # Check service status
+          SERVICE_STATUS=$(aws ecs describe-services \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }} \
+            --query 'services[0].deployments[0].status' \
+            --output text)
+          
+          if [ "$SERVICE_STATUS" != "PRIMARY" ]; then
+            echo "Deployment failed! Status: $SERVICE_STATUS"
+            exit 1
+          fi
+          
+          echo "✅ Deployment successful!"
+
+      - name: Create deployment tag
+        run: |
+          git tag -a "prod-${{ inputs.version }}-$(date +%Y%m%d-%H%M%S)" \
+            -m "Production deployment of ${{ inputs.version }}"
+          git push origin --tags
+
+  post-deployment:
+    name: Post-Deployment Tasks
+    runs-on: ubuntu-latest
+    needs: deploy
+    
+    steps:
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests..."
+          # Add your smoke test commands here
+          curl -f https://planmytrip.yourdomain.com/ || exit 1
+
+      - name: Notify team
+        run: |
+          echo "🚀 Production deployment completed successfully!"
+          echo "Version: ${{ inputs.version }}"
+          echo "Deployed at: $(date)"
+
+  rollback:
+    name: Rollback on Failure
+    runs-on: ubuntu-latest
+    needs: [deploy, post-deployment]
+    if: failure()
+    
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Trigger rollback
+        run: |
+          echo "⚠️ Deployment failed! Initiating rollback..."
+          
+          # Force new deployment with previous task definition
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --force-new-deployment
+          
+          echo "Rollback initiated. Check ECS console for status."
+
+      - name: Notify team of failure
+        run: |
+          echo "❌ Production deployment failed and rollback initiated"
+          echo "Version attempted: ${{ inputs.version }}"
+          echo "Failed at: $(date)"
+
+

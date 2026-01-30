@@ -1,0 +1,73 @@
+global:
+  resolve_timeout: 5m
+  # Slack webhook URL (configure this)
+  slack_api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+
+# Templates for notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Route tree for notifications
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'default'
+  
+  routes:
+    # Critical alerts - immediate notification
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      continue: true
+    
+    # Warning alerts - less urgent
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+
+# Notification receivers
+receivers:
+  - name: 'default'
+    slack_configs:
+      - channel: '#planmytrip-alerts'
+        title: 'Alert: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+
+  - name: 'critical-alerts'
+    slack_configs:
+      - channel: '#planmytrip-critical'
+        title: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: 'danger'
+    # Add email notification for critical alerts
+    # email_configs:
+    #   - to: 'ops-team@example.com'
+    #     from: 'alertmanager@example.com'
+    #     smarthost: 'smtp.gmail.com:587'
+    #     auth_username: 'alertmanager@example.com'
+    #     auth_password: 'password'
+
+  - name: 'warning-alerts'
+    slack_configs:
+      - channel: '#planmytrip-alerts'
+        title: '⚠️ Warning: {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        send_resolved: true
+        color: 'warning'
+
+# Inhibition rules
+inhibit_rules:
+  # Inhibit warning if critical is firing
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'cluster', 'service']
+

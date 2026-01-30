@@ -1,0 +1,103 @@
+groups:
+  - name: infrastructure_alerts
+    interval: 30s
+    rules:
+      # Database Connection Issues
+      - alert: DatabaseConnectionFailure
+        expr: pg_up == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Database connection failure"
+          description: "Cannot connect to PostgreSQL database"
+
+      # High Database Connections
+      - alert: HighDatabaseConnections
+        expr: (pg_stat_database_numbackends / pg_settings_max_connections) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "High database connection usage"
+          description: "Database connections at {{ $value | humanizePercentage }} (threshold: 80%)"
+
+      # Database Slow Queries
+      - alert: SlowDatabaseQueries
+        expr: rate(pg_stat_activity_max_tx_duration[5m]) > 30
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Average query time is {{ $value }}s (threshold: 30s)"
+
+      # High Disk Usage
+      - alert: HighDiskUsage
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.15
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High disk usage detected"
+          description: "Disk usage is {{ $value | humanizePercentage }} (threshold: 85%)"
+
+      # Node Down
+      - alert: NodeDown
+        expr: up{job="node-exporter"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "Node is down"
+          description: "Node {{ $labels.instance }} has been down for more than 2 minutes"
+
+      # High Network Traffic
+      - alert: HighNetworkTraffic
+        expr: rate(node_network_receive_bytes_total[5m]) > 100000000
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High network traffic detected"
+          description: "Network receive rate is {{ $value | humanize }}B/s (threshold: 100MB/s)"
+
+      # ECS Service Unhealthy
+      - alert: ECSServiceUnhealthy
+        expr: aws_ecs_service_running_count < aws_ecs_service_desired_count
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "ECS service unhealthy"
+          description: "ECS service {{ $labels.service_name }} has {{ $value }} running tasks (expected: {{ $labels.desired_count }})"
+
+      # RDS High CPU
+      - alert: RDSHighCPU
+        expr: aws_rds_cpuutilization_average > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "RDS CPU usage high"
+          description: "RDS instance {{ $labels.dbinstance_identifier }} CPU at {{ $value }}% (threshold: 80%)"
+
+      # ALB High Latency
+      - alert: ALBHighLatency
+        expr: aws_alb_target_response_time_average > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "ALB high latency detected"
+          description: "ALB {{ $labels.load_balancer }} latency is {{ $value }}s (threshold: 0.5s)"
+

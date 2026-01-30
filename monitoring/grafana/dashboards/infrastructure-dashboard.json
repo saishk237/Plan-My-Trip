@@ -1,0 +1,127 @@
+{
+  "dashboard": {
+    "title": "PlanMyTrip - Infrastructure Metrics",
+    "tags": ["infrastructure", "aws", "planmytrip"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "ECS Service - Running Tasks",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "aws_ecs_service_running_count",
+            "legendFormat": "Running Tasks"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "ECS Service - CPU Utilization",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "aws_ecs_service_cpuutilization_average",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "ECS Service - Memory Utilization",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "aws_ecs_service_memoryutilization_average",
+            "legendFormat": "Memory %"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "ALB - Request Count",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(aws_alb_request_count_sum[5m])",
+            "legendFormat": "Requests/sec"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
+      },
+      {
+        "id": 5,
+        "title": "ALB - Target Response Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aws_alb_target_response_time_average",
+            "legendFormat": "Response Time (s)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4}
+      },
+      {
+        "id": 6,
+        "title": "ALB - Healthy/Unhealthy Targets",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aws_alb_healthy_host_count_average",
+            "legendFormat": "Healthy"
+          },
+          {
+            "expr": "aws_alb_un_healthy_host_count_average",
+            "legendFormat": "Unhealthy"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12}
+      },
+      {
+        "id": 7,
+        "title": "RDS - CPU Utilization",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aws_rds_cpuutilization_average",
+            "legendFormat": "CPU %"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12}
+      },
+      {
+        "id": 8,
+        "title": "RDS - Database Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aws_rds_database_connections_average",
+            "legendFormat": "Connections"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20}
+      },
+      {
+        "id": 9,
+        "title": "RDS - Free Storage Space",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "aws_rds_free_storage_space_average / 1024 / 1024 / 1024",
+            "legendFormat": "Free Space (GB)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20}
+      }
+    ],
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}
+
